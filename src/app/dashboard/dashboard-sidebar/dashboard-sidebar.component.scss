@@ -1,0 +1,15 @@
+li:hover{
+    color: white !important
+}
+
+.m-menu__item:hover{
+    color:white !important
+}
+
+.m-aside-menu.m-aside-menu--skin-dark {
+    background-color: #282733 !important;
+}
+
+.m-aside-menu.m-aside-menu--skin-dark .m-menu__nav>.m-menu__item.m-menu__item--active>.m-menu__link .m-menu__link-text{
+    color: red !important;
+}

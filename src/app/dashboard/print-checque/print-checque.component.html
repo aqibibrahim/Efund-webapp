@@ -1,0 +1,193 @@
+<div class="m-subheader">
+	<div class="d-flex align-items-center">
+		<div class="mr-auto">
+			<h3 class="m-subheader__title"></h3>
+		</div>
+		<!-- <div> <span class="m-subheader__daterange" id="m_dashboard_daterangepicker"> <span
+					class="m-subheader__daterange-label"> <span class="m-subheader__daterange-title">Today:</span> <span
+						class="m-subheader__daterange-date m--font-brand">Feb 24</span> </span>
+				<a class="btn btn-sm btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill">
+					<i class="la la-angle-down"></i>
+				</a>
+			</span>
+		</div> -->
+	</div>
+</div>
+<div class="m-content">
+	<div class="m-portlet">
+		<div class="m-portlet__head">
+			<div class="m-portlet__head-caption">
+				<div class="m-portlet__head-title">
+					<span class="m-portlet__head-icon m--hide">
+						<i class="la la-gear"></i>
+					</span>
+					<h3 class="m-portlet__head-text text-center"> Cheque Print </h3>
+				</div>
+			</div>
+		</div>
+		<!--begin::Form-->
+		<form [formGroup]="form" (ngSubmit)="printCheque(form.value)"
+			class="m-form m-form--fit m-form--label-align-right m-form--group-seperator">
+			<div class="m-portlet__body">
+				<div class="form-group m-form__group row">
+					<label class="col-lg-2 col-form-label">Bank:</label>
+					<!-- <div class="col-lg-6">
+						<select (change)="setBank($event.target.value)" formControlName="bankAccount"
+							class="form-control">
+							<option value="" disabled selected>Select bank</option>
+							<option *ngFor="let bank of banks" [value]="bank._id">{{bank.name}}</option>
+						</select>
+						<span *ngIf="bankselected" class="text-success pl-2 pt-2">
+							Current Amount: {{this.currentAmount}}
+						</span>
+						<div *ngIf="bankAccount.invalid && bankAccount.touched" class="alert alert-danger">
+							Bank is required
+						</div>
+					</div> -->
+					<div class="col-lg-6">
+						<select (change)="setBank($event.target.value)" formControlName="bankAccount"
+							class="form-control" >
+							<option value="" selected>Select bank account</option>
+							<option *ngFor="let account of accounts" [value]="account._id">{{account.account_name}} | {{ account.name }}</option>
+						</select>
+						<span *ngIf="bankselected" class="text-success pl-2 pt-2">
+							Current Amount: {{this.currentAmount}}
+						</span>
+						<div *ngIf="bankAccount.invalid && bankAccount.touched" class="alert alert-danger">
+							Account is required
+						</div>
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<label class="col-lg-2 col-form-label">Cashier Name:</label>
+					<div class="col-lg-6">
+						<input formControlName="cashier_name" type="text" class="form-control m-input"
+							placeholder="Enter Name" >
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<label class="col-lg-2 col-form-label">Payee Name:</label>
+					<div class="col-lg-6">
+						<select [(ngModel)]="chequedata.purchaserID" formControlName="payee" class="form-control">
+							<option value="" selected>Select Payee</option>
+							<!-- <option [value]="chequedata.purchaserID">{{chequedata.purchaserName}}</option> -->
+							<option *ngFor="let payee of payees" [value]="payee._id" [selected]="payee_selected == payee.payee_name">{{payee.payee_name}}</option>
+						</select>
+						<div *ngIf="payee.invalid && payee.touched" class="alert alert-danger">
+							Payee is required
+						</div>
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<label class="col-lg-2 col-form-label">Cheque Number:</label>
+					<div class="col-lg-6">
+						<select formControlName="checkno" class="form-control">
+							<option value="" disabled selected>Select Cheque Number</option>
+							<option *ngFor="let cheque of cheques" [value]="cheque.check_no">{{cheque.check_no}}
+							</option>
+						</select>
+						<div *ngIf="checkno.invalid && checkno.touched" class="alert alert-danger">
+							Cheque number is required
+						</div>
+					</div>
+				</div>
+				<!-- <div class="form-group m-form__group row">
+					<label class="col-lg-2 col-form-label">Cost Center:</label>
+					<div class="col-lg-6">
+						<select formControlName="costcenter" class="form-control">
+							<option value="" disabled selected>Select Cost Center</option>
+							<option *ngFor="let cc of costcenters" [value]="cc._id">{{cc.name}}</option>
+						</select>
+						<div *ngIf="costcenter.invalid && costcenter.touched" class="alert alert-danger">
+							Cost Center is required
+						</div>
+					</div>
+				</div> -->
+				<div class="form-group m-form__group row">
+					<label class="col-lg-2 col-form-label">Amount:</label>
+					<div class="col-lg-6">
+						<input formControlName="amount" type="text" class="form-control m-input"
+							placeholder="Enter Amount" (keyup)="convertToWords($event.target.value)">
+						<div *ngIf="amount.invalid && amount.touched" class="alert alert-danger">
+							<div *ngIf="amount.errors.required">
+								Amount is required
+							</div>
+							<div *ngIf="amount.errors.pattern">
+								Amount must be a number
+							</div>
+						</div>
+						<span class="pt-2 pl-2 text-success" *ngIf="amount.valid">{{alphabetAmount}}</span>
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<label class="col-lg-2 col-form-label">Chart of Accounts</label>
+					<div class="col-lg-6">
+						<select (change)="setTypeofChart($event)" formControlName="chart_of_accounts"
+							class="form-control">
+							<option disabled selected>Select Chart of Accounts</option>
+							<option *ngFor="let chart of chartofAccounts" [value]="chart._id">{{chart.name}}</option>
+						</select>
+						<div *ngIf="chart_of_accounts.invalid && chart_of_accounts.touched" class="alert alert-danger">
+							Chart of accounts is required
+						</div>
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<label class="col-lg-2 col-form-label">Type</label>
+					<div class="col-lg-6">
+						<select formControlName="type" class="form-control">
+							<option value="" selected disabled>Select Type of Chart Account</option>
+							<option *ngFor="let type of typeofCharts" [value]="type._id">{{type.item_name}}</option>
+						</select>
+						<div *ngIf="type.invalid && type.touched" class="alert alert-danger">
+							Type is required
+						</div>
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<label class="col-lg-2 col-form-label">Account head:</label>
+					<div class="col-lg-6">
+						<select formControlName="account_head" class="form-control">
+							<option value="Payable" selected>Payable</option>
+							<option value="Non-Payable">Non-Payable</option>
+						</select>
+						<div *ngIf="account_head.invalid && account_head.touched" class="alert alert-danger">
+							Account head is required
+						</div>
+					</div>
+				</div>
+				<div class="m-form__group m-form__group--last form-group row" *ngIf="marked">
+					<label class="col-lg-2 col-form-label">Date:</label>
+					<div class="input-group col-lg-3">
+						<input formControlName="issue_date" class="form-control m-input" placeholder="dd-mm-yyyy"
+							ngbDatepicker #d12="ngbDatepicker">
+						<div class="input-group-append">
+							<button class="btn btn-outline-secondary" (click)="d12.toggle()" type="button">
+								<i class="fas fa-calendar-alt" style="color: #FF3301;"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="m-form__group m-form__group--last form-group row">
+					<label class="col-lg-2 col-form-label">Add date to Cheque</label>
+					<div class="input-group col-lg-3">
+						<input type="checkbox" [(ngModel)]="theCheckbox"  data-md-icheck style="margin-top: 6%;" (change)="toggleVisibility($event)"/>
+					</div>
+				</div>
+			</div>
+
+			<div class="m-portlet__foot m-portlet__no-border m-portlet__foot--fit">
+				<div class="m-form__actions m-form__actions--solid">
+					<div class="row">
+						<div class="col-lg-2"></div>
+						<div class="col-lg-6 offset-8">
+							<button class="btn m-btn--square m-btn m-btn--custom">Request for
+								Approval</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+		<!--end::Form-->
+	</div>
+</div>

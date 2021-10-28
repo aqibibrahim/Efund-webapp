@@ -1,0 +1,314 @@
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <h3 class="m-subheader__title"></h3>
+        </div>
+        <!-- <div> <span class="m-subheader__daterange" id="m_dashboard_daterangepicker"> <span
+                    class="m-subheader__daterange-label"> <span class="m-subheader__daterange-title">Today:</span> <span
+                        class="m-subheader__daterange-date m--font-brand">Feb 24</span> </span>
+                <a class="btn btn-sm btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill">
+                    <i class="la la-angle-down"></i>
+                </a>
+            </span>
+        </div> -->
+    </div>
+</div>
+<div class="m-content">
+    <div class="m-portlet">
+        <div class="m-portlet__head">
+            <div class="m-portlet__head-caption">
+                <div class="m-portlet__head-title">
+                    <span class="m-portlet__head-icon m--hide">
+                        <i class="la la-gear"></i>
+                    </span>
+                    <h3 class="m-portlet__head-text text-center"> Details </h3>
+                </div>
+            </div>
+        </div>
+        <!--begin::Form-->
+        <div class="m-portlet__body">
+            <ul class="nav nav-tabs  m-tabs-line" role="tablist">
+                <li *ngFor="let menu of menus" class="nav-item m-tabs__item">
+                    <a (click)="changeMenu(menu)" class="nav-link m-tabs__link"
+                        [ngClass]="{'active': menu==activatedmenu}" data-toggle="tab" role="tab">
+                        {{menu}}
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active">
+                    <ng-container *ngIf="activatedmenu=='Date Log'">
+                        <form [formGroup]="dateForm" (ngSubmit)="submitDate(dateForm.value)">
+                            <div class="form-group m-form__group row offset-4">
+                                <label class="col-sm-3 col-form-label">First Date:</label>
+                                <div class="input-group col-sm-4" style="padding-left: 0px !important;">
+                                    <input formControlName="start_date" class="form-control m-input"
+                                        placeholder="dd-mm-yyyy" ngbDatepicker #d="ngbDatepicker">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
+                                            <i class="fas fa-calendar-alt" style="color: #FF3301;"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row offset-4">
+                                <label class="col-sm-3 col-form-label">Last Date:</label>
+                                <div class="input-group col-sm-4" style="padding-left: 0px !important;">
+                                    <input formControlName="end_date" class="form-control m-input"
+                                        placeholder="dd-mm-yyyy" ngbDatepicker #d2="ngbDatepicker">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" (click)="d2.toggle()" type="button">
+                                            <i class="fas fa-calendar-alt" style="color: #FF3301;"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row offset-5">
+                                <button type="submit" class="ml-2 btn m-btn--square m-btn m-btn--custom">
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+                    </ng-container>
+                    <ng-container *ngIf="activatedmenu=='Bank Log'">
+                        <form [formGroup]="bankForm" (ngSubmit)="submitBank(bankForm.value)">
+                            <div class="form-group m-form__group row offset-4">
+                                <label class="col-sm-3 col-form-label">Bank:</label>
+                                <div class="col-sm-4" style="padding-left: 0px !important;">
+                                    <select formControlName="bankAccount" class="form-control"  #myBank
+                                    (change)='onBankSelected(myBank.value)'>
+                                        <option value="" disabled selected>Select Bank</option>
+                                        <option *ngFor="let bank of banks" [value]="bank._id">{{bank.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row offset-4">
+                                <label class="col-sm-3 col-form-label">Account:</label>
+                                <div class="col-sm-4" style="padding-left: 0px !important;">
+                                    <select formControlName="account" class="form-control"  #mySelect
+                                    (change)='onOptionsSelected(mySelect.value)'>> 
+                                        <option value="" disabled selected>Select Account</option>
+                                        <option *ngFor="let account of bankaccounts" [value]="account._id">{{account.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row offset-4">
+                                <label class="col-sm-3 col-form-label">First Date:</label>
+                                <div class="input-group col-sm-4" style="padding-left: 0px !important;">
+                                    <input formControlName="start_date" class="form-control m-input"
+                                        placeholder="dd-mm-yyyy" ngbDatepicker #d3="ngbDatepicker">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" (click)="d3.toggle()" type="button">
+                                            <i class="fas fa-calendar-alt" style="color: #FF3301;"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row offset-4">
+                                <label class="col-sm-3 col-form-label">Last Date:</label>
+                                <div class="input-group col-sm-4" style="padding-left: 0px !important;">
+                                    <input formControlName="end_date" class="form-control m-input"
+                                        placeholder="dd-mm-yyyy" ngbDatepicker #d4="ngbDatepicker">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" (click)="d4.toggle()" type="button">
+                                            <i class="fas fa-calendar-alt" style="color: #FF3301;"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row offset-5">
+                                <button type="submit" class="ml-2 btn m-btn--square m-btn m-btn--custom">
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+                    </ng-container>
+                    <ng-container *ngIf="activatedmenu=='Cheque Book Log'">
+                        <form [formGroup]="chequebookForm" (ngSubmit)="submitChequebook(chequebookForm.value)">
+                            <div class="form-group m-form__group row offset-4">
+                                <label class="col-sm-3 col-form-label">Cheque No. Start:</label>
+                                <div>
+                                    <input formControlName="check_st_no" type="number" class="form-control m-input"
+                                        placeholder="Enter Start number">
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row offset-4">
+                                <label class="col-sm-3 col-form-label">Cheque No. Stop:</label>
+                                <div>
+                                    <input formControlName="check_end_no" type="number"
+                                        class="form-control m-input" placeholder="Enter Stop number">
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row offset-4">
+                                <label class="col-sm-3 col-form-label">First Date:</label>
+                                <div class="input-group col-sm-4" style="padding-left: 0px !important;">
+                                    <input formControlName="start_date" class="form-control m-input"
+                                        placeholder="dd-mm-yyyy" ngbDatepicker #d5="ngbDatepicker">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" (click)="d5.toggle()" type="button">
+                                            <i class="fas fa-calendar-alt" style="color: #FF3301;"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row offset-4">
+                                <label class="col-sm-3 col-form-label">Last Date:</label>
+                                <div class="input-group col-sm-4" style="padding-left: 0px !important;">
+                                    <input formControlName="end_date" class="form-control m-input"
+                                        placeholder="dd-mm-yyyy" ngbDatepicker #d6="ngbDatepicker">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" (click)="d6.toggle()" type="button">
+                                            <i class="fas fa-calendar-alt" style="color: #FF3301;"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row offset-5">
+                                <button type="submit" class="ml-2 btn m-btn--square m-btn m-btn--custom">
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+                    </ng-container>
+                    <ng-container *ngIf="activatedmenu=='Payee Log'">
+                        <form [formGroup]="payeeForm" (ngSubmit)="submitPayee(payeeForm.value)">
+                            <div class="form-group m-form__group row offset-4">
+                                <label class="col-sm-3 col-form-label">Payee Name:</label>
+                                <div class="col-sm-4" style="padding-left: 0px !important;">
+                                    <select formControlName="payee" class="form-control">
+                                        <option value="" disabled selected>Select Payee</option>
+                                        <option *ngFor="let payee of payees" [value]="payee._id">{{payee.payee_name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row offset-4">
+                                <label class="col-sm-3 col-form-label">First Date:</label>
+                                <div class="input-group col-sm-4" style="padding-left: 0px !important;">
+                                    <input formControlName="start_date" class="form-control m-input"
+                                        placeholder="dd-mm-yyyy" ngbDatepicker #d7="ngbDatepicker">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" (click)="d7.toggle()" type="button">
+                                            <i class="fas fa-calendar-alt" style="color: #FF3301;"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row offset-4">
+                                <label class="col-sm-3 col-form-label">Last Date:</label>
+                                <div class="input-group col-sm-4" style="padding-left: 0px !important;">
+                                    <input formControlName="end_date" class="form-control m-input"
+                                        placeholder="dd-mm-yyyy" ngbDatepicker #d8="ngbDatepicker">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" (click)="d8.toggle()" type="button">
+                                            <i class="fas fa-calendar-alt" style="color: #FF3301;"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row offset-5">
+                                <button type="submit" class="ml-2 btn m-btn--square m-btn m-btn--custom">
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+                    </ng-container>
+                    <ng-container *ngIf="activatedmenu=='Cost Log'">
+                        <form [formGroup]="costForm" (ngSubmit)="submitCost(costForm.value)">
+                            <div class="form-group m-form__group row offset-4">
+                                <label class="col-sm-3 col-form-label">Amount Start:</label>
+                                <div>
+                                    <input formControlName="amount_start" type="text" class="form-control m-input" placeholder="Enter Start Amount">
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row offset-4">
+                                <label class="col-sm-3 col-form-label">Amount End:</label>
+                                <div>
+                                    <input formControlName="amount_end" type="text" class="form-control m-input" placeholder="Enter End Amount">
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row offset-4">
+                                <label class="col-sm-3 col-form-label">First Date:</label>
+                                <div class="input-group col-sm-4" style="padding-left: 0px !important;">
+                                    <input formControlName="start_date" class="form-control m-input" placeholder="dd-mm-yyyy" ngbDatepicker
+                                        #d9="ngbDatepicker">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" (click)="d9.toggle()" type="button">
+                                            <i class="fas fa-calendar-alt" style="color: #FF3301;"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row offset-4">
+                                <label class="col-sm-3 col-form-label">Last Date:</label>
+                                <div class="input-group col-sm-4" style="padding-left: 0px !important;">
+                                    <input formControlName="end_date" class="form-control m-input" placeholder="dd-mm-yyyy" ngbDatepicker
+                                        #d10="ngbDatepicker">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" (click)="d10.toggle()" type="button">
+                                            <i class="fas fa-calendar-alt" style="color: #FF3301;"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row offset-5">
+                                <button type="submit"
+                                    class="ml-2 btn m-btn--square m-btn m-btn--custom">
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+                    </ng-container>
+                    <!-- <ng-container *ngIf="activatedmenu=='Request Payment'">
+                        <form [formGroup]="paymentForm" (ngSubmit)="submitPayment(paymentForm.value)">
+                            <div class="form-group m-form__group row offset-4">
+                                <label class="col-sm-3 col-form-label">Status End:</label>
+                                <div class="col-sm-4" style="padding-left: 0px !important;">
+                                    <select formControlName="payment" class="m-input form-control">
+                                        <option selected disabled>Select Status</option>
+                                        <option value="Approved">Approved</option>
+                                        <option value="Rejected">Rejected</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row offset-4">
+                                <label class="col-sm-3 col-form-label">First Date:</label>
+                                <div class="input-group col-sm-4" style="padding-left: 0px !important;">
+                                    <input formControlName="start_date" class="form-control m-input"
+                                        placeholder="dd-mm-yyyy" ngbDatepicker #d11="ngbDatepicker">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" (click)="d11.toggle()" type="button">
+                                            <i class="fas fa-calendar-alt" style="color: #FF3301;"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row offset-4">
+                                <label class="col-sm-3 col-form-label">Last Date:</label>
+                                <div class="input-group col-sm-4" style="padding-left: 0px !important;">
+                                    <input formControlName="end_date" class="form-control m-input"
+                                        placeholder="dd-mm-yyyy" ngbDatepicker #d12="ngbDatepicker">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" (click)="d12.toggle()" type="button">
+                                            <i class="fas fa-calendar-alt" style="color: #FF3301;"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row offset-5">
+                                <button type="submit" class="ml-2 btn m-btn--square m-btn m-btn--custom">
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+                    </ng-container> -->
+                </div>
+            </div>
+        </div>
+
+
+        <!--end::Form-->
+    </div>
+</div>

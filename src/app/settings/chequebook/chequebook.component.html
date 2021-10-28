@@ -1,0 +1,339 @@
+<div class="m-subheader">
+  <div class="d-flex align-items-center">
+    <div class="mr-auto">
+      <h3 class="m-subheader__title"></h3>
+    </div>
+    <!-- <div>
+      <span class="m-subheader__daterange" id="m_dashboard_daterangepicker">
+        <span class="m-subheader__daterange-label">
+          <span class="m-subheader__daterange-title">Today:</span>
+          <span class="m-subheader__daterange-date m--font-brand">Feb 24</span>
+        </span>
+        <a
+          class="btn btn-sm btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill"
+        >
+          <i class="la la-angle-down"></i>
+        </a>
+      </span>
+    </div> -->
+  </div>
+</div>
+<div class="m-content">
+  <div class="m-portlet">
+    <div class="m-portlet__head">
+      <div class="m-portlet__head-caption">
+        <div class="m-portlet__head-title">
+          <h3 class="m-portlet__head-text text-center">Cheque Book List</h3>
+        </div>
+      </div>
+    </div>
+    <div class="m-portlet__body">
+      <div class="form-group m-form__group row justify-content-end">
+        <div>
+          <mat-form-field class="mr-5">
+            <input
+              matInput
+              (keyup)="applyFilter($event.target.value)"
+              placeholder="Filter"
+            />
+          </mat-form-field>
+          <!-- </div> -->
+          <!-- <div class="offset-1"> -->
+          <button
+            type="button"
+            [routerLink]="['/settings/add-chequebook']"
+            class="btn btn-focus m-btn--square m-btn m-btn--custom"
+          >
+            Add
+          </button>
+        </div>
+      </div>
+      <table mat-table [dataSource]="dataSource">
+        <!-- Position Column -->
+        <ng-container matColumnDef="position">
+          <th mat-header-cell *matHeaderCellDef>Sr. No.</th>
+          <td mat-cell *matCellDef="let element">{{ element.position }}</td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="bank_name">
+          <th mat-header-cell *matHeaderCellDef>Bank Name</th>
+          <td mat-cell *matCellDef="let element">{{ element.bank_name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cheque_no">
+          <th mat-header-cell *matHeaderCellDef>Cheque No</th>
+          <td mat-cell *matCellDef="let element">{{ element.cheque_no }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="chequebook_name">
+          <th mat-header-cell *matHeaderCellDef>Chequebook Name</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.chequebook_name }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Date of Submit</th>
+          <td mat-cell *matCellDef="let element">{{ convertDateToDMY(element.date) }}</td>
+        </ng-container>
+
+        <!-- Symbol Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let element">
+            <i
+              class="fas fa-user-edit p-1 text-success"
+              (click)="openEdit(editModal, element.id)"
+              placement="bottom"
+              ngbTooltip="Edit Chequebook"
+            ></i>
+            <i
+              class="fas fa-trash text-danger"
+              (click)="openDelete(deleteModal, element.id)"
+              placement="bottom"
+              ngbTooltip="Delete Chequebook"
+            ></i>
+            <i
+              class="fas fa-info-circle p-1 text-primary"
+              (click)="openDetails(detailsModal, element.id)"
+              placement="bottom"
+              ngbTooltip="Chequebook Details"
+            ></i>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    <div class="modal-lg">
+      <ng-template class="modal-lg" #detailsModal let-modal>
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-basic-title">Chequebook Details</h4>
+          <button
+            type="button"
+            class="close"
+            aria-label="Close"
+            (click)="modal.dismiss('Cross click')"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body m-3">
+          <form class="m-form m-form--fit m-form--label-align-right">
+            <div class="form-group m-form__group row">
+              <div class="col-lg-6">
+                <label>Bank Name:</label>
+                <input
+                  disabled
+                  [(ngModel)]="detailsData.name"
+                  [ngModelOptions]="{ standalone: true }"
+                  type="text"
+                  class="form-control m-input"
+                />
+              </div>
+              <div class="col-lg-6">
+                <label class="">Chequebook Name:</label>
+                <input
+                  disabled
+                  [(ngModel)]="detailsData.chequebook_name"
+                  [ngModelOptions]="{ standalone: true }"
+                  type="text"
+                  class="form-control m-input"
+                />
+              </div>
+            </div>
+            <div class="form-group m-form__group row">
+              <div class="col-lg-6">
+                <label>Chequebook start No:</label>
+                <input
+                  disabled
+                  [(ngModel)]="detailsData.chequebook_st_no"
+                  [ngModelOptions]="{ standalone: true }"
+                  type="text"
+                  class="form-control m-input"
+                />
+              </div>
+              <div class="col-lg-6">
+                <label class="">Chequebook end No:</label>
+                <input
+                  disabled
+                  [(ngModel)]="detailsData.chequebook_end_no"
+                  [ngModelOptions]="{ standalone: true }"
+                  type="text"
+                  class="form-control m-input"
+                />
+              </div>
+            </div>
+            <div class="form-group m-form__group row">
+              <div class="col-lg-6">
+                <label>Date:</label>
+                <input
+                  disabled
+                  [(ngModel)]="detailsData.date"
+                  [ngModelOptions]="{ standalone: true }"
+                  type="text"
+                  class="form-control m-input"
+                />
+              </div>
+              <div class="col-lg-6">
+                <label class="">Account ID:</label>
+                <input
+                  disabled
+                  [(ngModel)]="detailsData.account_id"
+                  [ngModelOptions]="{ standalone: true }"
+                  type="text"
+                  class="form-control m-input"
+                />
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-danger btn-warn"
+            (click)="modal.close('Save click')"
+          >
+            Close
+          </button>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="modal-lg">
+      <ng-template class="modal-lg" #deleteModal let-modal>
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-title">Chequebook deletion</h4>
+          <button
+            type="button"
+            class="close"
+            aria-describedby="modal-title"
+            (click)="modal.dismiss('Cross click')"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>
+            <strong>Are you sure you want to delete this chequebook?</strong>
+          </p>
+          <p>
+            All information associated to this chequebook will be permanently
+            deleted.
+            <span class="text-danger">This operation can not be undone.</span>
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="modal.dismiss('cancel click')"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="deleteChequebook(deleteitem)"
+          >
+            Delete
+          </button>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="modal-lg">
+      <ng-template class="modal-lg" #editModal let-modal>
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-basic-title">Edit Chequebook</h4>
+          <button
+            type="button"
+            class="close"
+            aria-label="Close"
+            (click)="modal.dismiss('Cross click')"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body m-3">
+          <form
+            [formGroup]="addchequebook"
+            (ngSubmit)="updateChequebook(addchequebook.value)"
+            class="m-form m-form--fit m-form--label-align-right m-form--group-seperator"
+          >
+            <div class="m-portlet__body">
+              <div class="form-group m-form__group row">
+                <label class="col-lg-2 col-form-label">Chequebook Name:</label>
+                <div class="col-lg-6">
+                  <input
+                    [(ngModel)]="chequedata.name"
+                    formControlName="chequebook_name"
+                    type="text"
+                    class="form-control"
+                  />
+                  <div
+                    *ngIf="
+                      addchequebook.controls['chequebook_name'].touched &&
+                      !addchequebook.controls['chequebook_name'].valid
+                    "
+                    class="alert alert-danger"
+                  >
+                    <span
+                      *ngIf="
+                        addchequebook.controls['chequebook_name'].hasError(
+                          'required'
+                        )
+                      "
+                    >
+                      Name is required
+                    </span>
+                    <span
+                      *ngIf="
+                        addchequebook.controls['chequebook_name'].hasError(
+                          'minlength'
+                        )
+                      "
+                    >
+                      Min length is 3
+                    </span>
+                    <span
+                      *ngIf="
+                        addchequebook.controls['chequebook_name'].hasError(
+                          'pattern'
+                        )
+                      "
+                    >
+                      Name must be alphabets only
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="m-form__group m-form__group form-group row">
+                <div class="col-sm-6 offset-7">
+                  <button
+                    [disabled]="!addchequebook.valid"
+                    class="btn m-btn--square m-btn m-btn--custom pull-right ml-2"
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-danger btn-warn"
+            (click)="modal.close('Save click')"
+          >
+            Close
+          </button>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

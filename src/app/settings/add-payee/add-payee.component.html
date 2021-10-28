@@ -1,0 +1,149 @@
+<div class="m-subheader">
+  <div class="d-flex align-items-center">
+    <div class="mr-auto">
+      <h3 class="m-subheader__title">Add Payee</h3>
+    </div>
+    <!-- <div>
+      <span class="m-subheader__daterange" id="m_dashboard_daterangepicker">
+        <span class="m-subheader__daterange-label">
+          <span class="m-subheader__daterange-title">Today:</span>
+          <span class="m-subheader__daterange-date m--font-brand">Feb 24</span>
+        </span>
+        <a class="btn btn-sm btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill">
+          <i class="la la-angle-down"></i>
+        </a>
+      </span>
+    </div> -->
+  </div>
+</div>
+<div class="m-content">
+  <div class="m-portlet">
+    <div class="m-portlet__head">
+      <div class="m-portlet__head-caption">
+        <div class="m-portlet__head-title">
+          <h3 class="m-portlet__head-text text-center">Payee Details:</h3>
+        </div>
+      </div>
+    </div>
+    <!--begin::Form-->
+    <form [formGroup]="addpayee" (ngSubmit)="AddPayee(addpayee)"
+      class="m-form m-form--fit m-form--label-align-right m-form--group-seperator">
+      <div class="m-portlet__body">
+        <div class="form-group m-form__group row">
+          <label class="col-lg-2 col-form-label">Full Name:</label>
+          <div class="col-lg-6">
+            <input formControlName="payee_name" type="text" class="form-control m-input"
+              placeholder="Enter Full Name" />
+            <div *ngIf="
+                addpayee.controls['payee_name'].touched &&
+                !addpayee.controls['payee_name'].valid
+              " class="alert alert-danger">
+              <span *ngIf="addpayee.controls['payee_name'].hasError('required')">
+                First name is required
+              </span>
+              <span *ngIf="addpayee.controls['payee_name'].hasError('minlength')">
+                Min length is 3
+              </span>
+              <span *ngIf="addpayee.controls['payee_name'].hasError('pattern')">
+                Name must be alphabets only
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group m-form__group row">
+          <label class="col-lg-2 col-form-label">Payee CNIC:</label>
+          <div class="col-lg-6">
+            <input formControlName="payee_cnic" type="text" [textMask]="{mask: mask}" class="form-control m-input"
+            placeholder="12345-123456-1" />
+            <div *ngIf="
+                addpayee.controls['payee_cnic'].touched &&
+                !addpayee.controls['payee_cnic'].valid
+              " class="alert alert-danger">
+              <span *ngIf="addpayee.controls['payee_cnic'].hasError('required')">
+                CNIC is required
+              </span>
+              <span *ngIf="addpayee.controls['payee_cnic'].hasError('pattern')">
+                Must be a number with optional dashes
+              </span>
+              <span *ngIf="addpayee.controls['payee_cnic'].hasError('minlength')">
+                Min length is 13
+              </span>
+              <span *ngIf="addpayee.controls['payee_cnic'].hasError('maxlength')">
+                Max length is 13
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group m-form__group row">
+          <label class="col-lg-2 col-form-label">Payee Account:</label>
+          <div class="col-lg-6">
+            <input formControlName="payee_account" type="text" class="form-control m-input"
+              placeholder="Enter Payee Account" />
+            <div *ngIf="
+                addpayee.controls['payee_account'].touched &&
+                !addpayee.controls['payee_account'].valid
+              " class="alert alert-danger">
+              <span *ngIf="addpayee.controls['payee_account'].hasError('required')">
+                Account is required
+              </span>
+              <span *ngIf="addpayee.controls['payee_account'].hasError('pattern')">
+                Must be a number
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group m-form__group row">
+          <label class="col-lg-2 col-form-label">Payee Address:</label>
+          <div class="col-lg-6">
+            <input formControlName="payee_address" type="text" class="form-control m-input"
+              placeholder="Enter Payee Address" />
+            <div *ngIf="
+                addpayee.controls['payee_address'].touched &&
+                !addpayee.controls['payee_address'].valid
+              " class="alert alert-danger">
+              <span *ngIf="addpayee.controls['payee_address'].hasError('required')">
+                Address is required
+              </span>
+              <span *ngIf="addpayee.controls['payee_address'].hasError('minlength')">
+                Min length is 5
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group m-form__group row">
+          <label class="col-lg-2 col-form-label">City:</label>
+          <div class="col-lg-6">
+            <input formControlName="payee_city" type="text" class="form-control m-input" placeholder="Enter City" />
+            <div *ngIf="
+                addpayee.controls['payee_city'].touched &&
+                !addpayee.controls['payee_city'].valid
+              " class="alert alert-danger">
+              <span *ngIf="addpayee.controls['payee_city'].hasError('required')">
+                City is required
+              </span>
+              <span *ngIf="addpayee.controls['payee_city'].hasError('minlength')">
+                Min length is 5
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="m-portlet__foot m-portlet__no-border m-portlet__foot--fit">
+        <div class="m-form__actions m-form__actions--solid">
+          <div class="row">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-6">
+              <button type="submit" [disabled]="!addpayee.valid" class="btn btn-focus ">
+                Submit</button>&nbsp;&nbsp;
+              
+              <button routerLink="/settings/payee" class="btn btn-outline-focus ">
+                Back
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <!--end::Form-->
+  </div>
+</div>

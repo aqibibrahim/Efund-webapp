@@ -1,0 +1,21 @@
+.nav-link:hover{
+    cursor: pointer;
+}
+
+.nav-link.m-tabs__link.active{
+    color: #FF3301 !important
+}
+
+.m-btn--custom{
+    background-color: #FF3301;
+    color: white;
+}
+
+.m-btn--custom:hover{
+    background-color: rgb(255, 18, 1);
+    color: white;
+}
+
+.fa-calender-alt{
+    color: #FF3301
+}

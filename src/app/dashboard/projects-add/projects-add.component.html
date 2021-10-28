@@ -1,0 +1,128 @@
+<div class="m-subheader">
+  <div class="d-flex align-items-center">
+    <div class="mr-auto">
+      <h3 class="m-subheader__title"></h3>
+    </div>
+    <!-- <div>
+      <span class="m-subheader__daterange" id="m_dashboard_daterangepicker">
+        <span class="m-subheader__daterange-label">
+          <span class="m-subheader__daterange-title">Today:</span>
+          <span class="m-subheader__daterange-date m--font-brand">Feb 24</span>
+        </span>
+        <a class="btn btn-sm btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill">
+          <i class="la la-angle-down"></i>
+        </a>
+      </span>
+    </div> -->
+  </div>
+</div>
+<div class="m-content">
+  <div class="m-portlet">
+    <div class="m-portlet__head">
+      <div class="m-portlet__head-caption">
+        <div class="m-portlet__head-title">
+          <span class="m-portlet__head-icon m--hide">
+            <i class="la la-gear"></i>
+          </span>
+          <h3 class="m-portlet__head-text text-center">Project Details</h3>
+        </div>
+      </div>
+    </div>
+    <!--begin::Form-->
+    <form [formGroup]="form" (ngSubmit)="doAddProject(form.value)"
+      class="m-form m-form--fit m-form--label-align-right m-form--group-seperator">
+      <div class="m-portlet__body">
+        <div class="form-group m-form__group row">
+          <label class="col-sm-2 col-form-label">Project Name:</label>
+          <div class="col-sm-6">
+            <input formControlName="project_name" type="text" class="form-control m-input" placeholder="Enter Name" />
+            <div *ngIf="project_name.invalid && project_name.touched" class="alert alert-danger">
+              Valid Project Name is required
+            </div>
+            <div *ngIf="project_name.invalid && project_name.errors.pattern" class="alert alert-danger">
+              Project Name must be in alphabets
+            </div>
+          </div>
+        </div>
+        <div class="form-group m-form__group row">
+          <label class="col-sm-2 col-form-label">Project Description:</label>
+          <div class="col-sm-6">
+            <input formControlName="description" type="text" class="form-control m-input"
+              placeholder="Enter Description" />
+            <div *ngIf="description.invalid && description.touched" class="alert alert-danger">
+              Project Description is required
+            </div>
+          </div>
+        </div>
+        <ng-container *ngIf="details.controls[0]; else add_project" formArrayName="details">
+          <div class="m-form__group m-form__group--last form-group row pb-2"
+            *ngFor="let project of details.controls; let i = index">
+            <ng-container [formGroupName]="i">
+              <label class="col-sm-2 col-form-label">Purchaser Name:</label>
+              <div class="col-sm-3">
+                <select [formControl]="project['controls'].purchaser" class="form-control">
+                  <option value="" disabled selected>Select Purchaser</option>
+                  <option *ngFor="let purch of purchaser" [value]="purch._id">{{
+                    purch.name
+                  }}</option>
+                </select>
+                <div *ngIf="
+                    project['controls'].purchaser.invalid &&
+                    project['controls'].purchaser.touched
+                  " class="alert alert-danger">
+                  Purchaser is required
+                </div>
+              </div>
+              <label class="pt-3 pl-3"><b>Report to</b></label>
+              <label class="col-sm-2 col-form-label">Supervisor Name:</label>
+              <div class="col-sm-3">
+                <select [formControl]="project['controls'].supervisor" class="form-control">
+                  <option value="" disabled selected>Select Supervisor</option>
+                  <option *ngFor="let sup of supervisor" [value]="sup._id">{{
+                    sup.name
+                  }}</option>
+                </select>
+                <div *ngIf="
+                    project['controls'].supervisor.invalid &&
+                    project['controls'].supervisor.touched
+                  " class="alert alert-danger">
+                  Supervisor is required
+                </div>
+              </div>
+              <div class="pt-1">
+                <i class="flaticon-delete-2 text-danger" (click)="removeProject(project)"></i>
+              </div>
+            </ng-container>
+          </div>
+        </ng-container>
+        <ng-template #add_project>
+          <div class="alert alert-danger col-sm-12">
+            Must add at least one project
+          </div>
+        </ng-template>
+        <div class="m-form__group m-form__group form-group row">
+          <div class="offset-5 pl-5 col-sm-2">
+            <i class="la la-plus text-success" (click)="addProject()"></i>
+          </div>
+        </div>
+      </div>
+      <div class=" pt-5 m-portlet__foot m-portlet__no-border m-portlet__foot--fit">
+        <div class="m-form__actions m-form__actions--solid">
+          <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-6 offset-4">
+              <button [disabled]="details.controls[0] && form.valid ? false : true"
+                class="btn m-btn--square m-btn m-btn--custom pull-right ml-2">
+                Submit
+              </button>
+              <button [routerLink]="['/dashboard/projects-list']" class="btn btn-outline-focus pull-right">
+                Back
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <!--end::Form-->
+  </div>
+</div>

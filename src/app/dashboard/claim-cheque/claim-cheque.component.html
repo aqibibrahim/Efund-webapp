@@ -1,0 +1,80 @@
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <h3 class="m-subheader__title"></h3>
+        </div>
+        <!-- <div> <span class="m-subheader__daterange" id="m_dashboard_daterangepicker"> <span
+                    class="m-subheader__daterange-label"> <span class="m-subheader__daterange-title">Today:</span> <span
+                        class="m-subheader__daterange-date m--font-brand">Feb 24</span> </span>
+                <a class="btn btn-sm btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill">
+                    <i class="la la-angle-down"></i>
+                </a>
+            </span>
+        </div> -->
+    </div>
+</div>
+<div class="m-content">
+    <div class="m-portlet">
+        <!--begin::Form-->
+        <button style="position: absolute;right: 30px;" class="ml-2 btn m-btn--square m-btn m-btn--custom" (click)="exportexcel()">
+          Download As Excel
+      </button>
+        <!--end::Form-->
+        <div class="m-portlet__body">
+            <!--  -->
+            <table mat-table [dataSource]="dataSource" style="width: -webkit-fill-available;" id="excel-table">
+              <!-- Position Column -->
+              <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef>Date</th>
+                <td mat-cell *matCellDef="let element">{{ element.date }}</td>
+              </ng-container>
+      
+              <!-- Name Column -->
+              <ng-container matColumnDef="bank">
+                <th mat-header-cell *matHeaderCellDef>Bank Name</th>
+                <td mat-cell *matCellDef="let element">{{ element.bank }}</td>
+              </ng-container>
+      
+              <ng-container matColumnDef="purchasername">
+                <th mat-header-cell *matHeaderCellDef>Purchaser Name</th>
+                <td mat-cell *matCellDef="let element">{{ element.purchaser_name }}</td>
+              </ng-container>
+      
+              
+              <ng-container matColumnDef="itemname">
+                <th mat-header-cell *matHeaderCellDef>Item Name</th>
+                <td mat-cell *matCellDef="let element">{{ element.item_name }}</td>
+              </ng-container>
+              
+              <ng-container matColumnDef="itemquantity">
+                <th mat-header-cell *matHeaderCellDef>Item Quantity</th>
+                <td mat-cell *matCellDef="let element">{{ element.item_quantity }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="itemprice">
+                <th mat-header-cell *matHeaderCellDef>Item Price</th>
+                <td mat-cell *matCellDef="let element">{{ element.item_price }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="amount">
+                <th mat-header-cell *matHeaderCellDef>Amount</th>
+                <td mat-cell *matCellDef="let element">{{ element.amount }}</td>
+              </ng-container>
+             
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+          </div>
+          <div class="m-portlet__foot m-portlet__no-border m-portlet__foot--fit">
+            <div class="m-form__actions m-form__actions--solid">
+                <div class="row">
+                    <div class="col-lg-6 offset-4">
+                        <button class="btn m-btn--square m-btn m-btn--custom" (click)="printclaimcheque()">
+                            Print and Generate Cheque
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

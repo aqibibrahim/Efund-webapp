@@ -1,0 +1,286 @@
+<div class="m-subheader">
+  <div class="d-flex align-items-center">
+    <div class="mr-auto">
+      <h3 class="m-subheader__title"></h3>
+    </div>
+    <!-- <div>
+      <span class="m-subheader__daterange" id="m_dashboard_daterangepicker">
+        <span class="m-subheader__daterange-label">
+          <span class="m-subheader__daterange-title">Today:</span>
+          <span class="m-subheader__daterange-date m--font-brand">Feb 24</span>
+        </span>
+        <a class="btn btn-sm btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill">
+          <i class="la la-angle-down"></i>
+        </a>
+      </span>
+    </div> -->
+  </div>
+</div>
+<div class="m-content">
+  <div class="m-portlet">
+    <div class="m-portlet__head">
+      <div class="m-portlet__head-caption">
+        <div class="m-portlet__head-title">
+          <h3 class="m-portlet__head-text">Employee List</h3>
+        </div>
+      </div>
+    </div>
+    <div class="m-portlet__body">
+      <div class="form-group m-form__group row justify-content-end">
+        <div>
+          <mat-form-field class="mr-5">
+            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter" />
+          </mat-form-field>
+          <!-- </div> -->
+          <!-- <div class="offset-1"> -->
+          <button type="button" [routerLink]="['/settings/add-employee']"
+            class="btn btn-focus m-btn--square  m-btn m-btn--custom">
+            Add
+          </button>
+        </div>
+      </div>
+      <table mat-table [dataSource]="dataSource">
+        <!-- Position Column -->
+        <ng-container matColumnDef="position">
+          <th mat-header-cell *matHeaderCellDef>Sr. No.</th>
+          <td mat-cell *matCellDef="let element">{{ element.position }}</td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Employee Name</th>
+          <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef>Email</th>
+          <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cnic">
+          <th mat-header-cell *matHeaderCellDef>CNIC</th>
+          <td mat-cell *matCellDef="let element">{{ element.cnic }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="phone">
+          <th mat-header-cell *matHeaderCellDef>Phone</th>
+          <td mat-cell *matCellDef="let element">{{ element.phone }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="role">
+          <th mat-header-cell *matHeaderCellDef>Roles</th>
+          <td mat-cell *matCellDef="let element">{{ element.role }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Date of Submit</th>
+          <td mat-cell *matCellDef="let element">{{ convertDateToDMY(element.date) }}</td>
+        </ng-container>
+
+        <!-- Symbol Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            <i class="fas fa-user-edit p-1 text-success" (click)="openEdit(editModal,element.id)" placement="bottom"
+              ngbTooltip="Edit Employee"></i>
+            <i class="fas fa-trash text-danger" (click)="openDelete(deleteModal,element.id, i)" placement="bottom"
+              ngbTooltip="Delete Employee"></i>
+            <i class="fas fa-info-circle p-1 text-primary" (click)="openDetails(detailsModal,element.id)"
+              placement="bottom" ngbTooltip="Employee Details"></i>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    <div class="modal-lg">
+      <ng-template class="modal-lg" #detailsModal let-modal>
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-basic-title">Employee Details</h4>
+          <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body m-3">
+          <form class="m-form m-form--fit m-form--label-align-right">
+            <div class="form-group m-form__group row">
+              <div class="col-lg-6">
+                <label>Name:</label>
+                <input disabled [(ngModel)]="detailsData.name" [ngModelOptions]="{standalone:true}" type="text"
+                  class="form-control m-input">
+              </div>
+              <div class="col-lg-6">
+                <label class="">Email:</label>
+                <input disabled [(ngModel)]="detailsData.email" [ngModelOptions]="{standalone:true}" type="text"
+                  class="form-control m-input">
+              </div>
+            </div>
+            <div class="form-group m-form__group row">
+              <div class="col-lg-6">
+                <label>CNIC:</label>
+                <input disabled [(ngModel)]="detailsData.cnic" [ngModelOptions]="{standalone:true}" type="text"
+                  class="form-control m-input">
+              </div>
+              <div class="col-lg-6">
+                <label class="">Phone Number:</label>
+                <input disabled [(ngModel)]="detailsData.phone" [ngModelOptions]="{standalone:true}" type="text"
+                  class="form-control m-input">
+              </div>
+            </div>
+            <div class="form-group m-form__group row">
+              <div class="col-lg-6">
+                <label>Date:</label>
+                <input disabled [(ngModel)]="detailsData.date" [ngModelOptions]="{standalone:true}" type="text"
+                  class="form-control m-input">
+              </div>
+              <div class="col-lg-6">
+                <label class="">Roles:</label>
+                <input disabled [(ngModel)]="detailsData.roles" [ngModelOptions]="{standalone:true}" type="text"
+                  class="form-control m-input">
+              </div>
+            </div>
+            <div class="form-group m-form__group row">
+              <div class="col-lg-8">
+                <label>Address:</label>
+                <textarea disabled [(ngModel)]="detailsData.address" [ngModelOptions]="{standalone:true}" type="text"
+                  class="form-control m-input"></textarea>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger btn-warn" (click)="modal.close('Save click')">Close</button>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="modal-lg">
+      <ng-template class="modal-lg" #editModal let-modal>
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-basic-title">Edit Employee</h4>
+          <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body m-3">
+          <form [formGroup]="employee" (ngSubmit)="updateEmployee(employee.value) "
+            class="m-form m-form--fit m-form--label-align-right m-form--group-seperator">
+            <div class="m-portlet__body">
+              <div class="form-group m-form__group row">
+                <label class="col-lg-2 col-form-label">Name:</label>
+                <div class="col-lg-6">
+                  <input type="text" [(ngModel)]="updateData.name" formControlName="name" class="form-control m-input"
+                    placeholder="Enter Name" />
+                  <div *ngIf="
+                employee.controls['name'].touched &&
+                !employee.controls['name'].valid
+              " class="alert alert-danger">
+                    <span *ngIf="employee.controls['name'].hasError('required')">
+                      First name is required
+                    </span>
+                    <span *ngIf="employee.controls['name'].hasError('minlength')">
+                      Min length is 3
+                    </span>
+                    <span *ngIf="employee.controls['name'].hasError('pattern')">
+                      Only Alphabets can be added
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group m-form__group row">
+                <label class="col-lg-2 col-form-label">Email:</label>
+                <div class="col-lg-6">
+                  <input type="email" [(ngModel)]="updateData.email" formControlName="email"
+                    class="form-control m-input" placeholder="Enter Email" />
+                  <div *ngIf="
+                employee.controls['email'].touched &&
+                !employee.controls['email'].valid
+              " class="alert alert-danger">
+                    <span *ngIf="employee.controls['email'].hasError('required')">
+                      Email is required
+                    </span>
+                    <span *ngIf="employee.controls['email'].hasError('email')">
+                      Email should be in standard form
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group m-form__group row">
+                <label class="col-lg-2 col-form-label">Address:</label>
+                <div class="col-lg-6">
+                  <input type="text" [(ngModel)]="updateData.address" formControlName="address"
+                    class="form-control m-input" placeholder="Enter Address" />
+                  <div *ngIf="
+                employee.controls['address'].touched &&
+                !employee.controls['address'].valid
+              " class="alert alert-danger">
+                    <span *ngIf="employee.controls['address'].hasError('required')">
+                      Address is required
+                    </span>
+                    <span *ngIf="employee.controls['address'].hasError('minlength')">
+                      Min length is 5
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group m-form__group row">
+                <label class="col-lg-2 col-form-label">Phone:</label>
+                <div class="col-lg-6">
+                  <input [(ngModel)]="updateData.phone" type="text" formControlName="phone" class="form-control m-input"
+                    placeholder="Enter Phone" />
+                  <div *ngIf="employee.controls['phone'].touched && employee.controls['phone'].invalid"
+                    class="alert alert-danger">
+                    <div *ngIf="employee.controls['phone'].hasError('required')">
+                      Phone is required
+                    </div>
+                    <div *ngIf="employee.controls['phone'].hasError('minlength')">
+                      Phone should be minimum 10 characters
+                    </div>
+                    <div *ngIf="employee.controls['phone'].hasError('pattern')">
+                      Phone must be a number
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="m-form__group m-form__group form-group row">
+                <div class="col-sm-6 offset-7">
+                  <button [disabled]="!employee.valid" class="btn m-btn--square m-btn m-btn--custom pull-right ml-2">
+                    Submit
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger btn-warn" (click)="modal.close('Save click')">Close</button>
+        </div>
+      </ng-template>
+    </div>
+
+
+    <div class="modal-lg">
+      <ng-template class="modal-lg" #deleteModal let-modal>
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-title">Employee deletion</h4>
+          <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Are you sure you want to delete this employee?</strong></p>
+          <p>All information associated to this employee will be permanently deleted.
+            <span class="text-danger">This operation can not be undone.</span>
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary"
+            (click)="modal.dismiss('cancel click')">Cancel</button>
+          <button type="button" class="btn btn-danger" (click)="deleteEmployee()">Delete</button>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

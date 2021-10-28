@@ -1,0 +1,183 @@
+<div class="m-subheader">
+  <div class="d-flex align-items-center">
+    <div class="mr-auto">
+      <h3 class="m-subheader__title"></h3>
+    </div>
+    <!-- <div>
+      <span class="m-subheader__daterange" id="m_dashboard_daterangepicker">
+        <span class="m-subheader__daterange-label">
+          <span class="m-subheader__daterange-title">Today:</span>
+          <span class="m-subheader__daterange-date m--font-brand">Feb 24</span>
+        </span>
+        <a
+          class="btn btn-sm btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill"
+        >
+          <i class="la la-angle-down"></i>
+        </a>
+      </span>
+    </div> -->
+  </div>
+</div>
+<div class="m-content">
+  <div class="m-portlet">
+    <div class="m-portlet__head">
+      <div class="m-portlet__head-caption">
+        <div class="m-portlet__head-title">
+          <h3 class="m-portlet__head-text text-center">Cheque Book Details:</h3>
+        </div>
+      </div>
+    </div>
+    <!--begin::Form-->
+    <form
+      [formGroup]="addchequebook"
+      (ngSubmit)="AddChequeBook(addchequebook)"
+      class="m-form m-form--fit m-form--label-align-right m-form--group-seperator"
+    >
+      <div class="m-portlet__body">
+        <div class="form-group m-form__group row">
+          <label class="col-lg-2 col-form-label">Bank:</label>
+          <div class="col-lg-6">
+            <select
+              (change)="bankchange($event)"
+              class="form-control"
+              formControlName="chequebook_bank"
+            >
+              <option value="" disabled selected>Select Bank</option>
+              <option *ngFor="let bank of banks" [value]="bank._id">
+                {{ bank.name }}</option
+              >
+            </select>
+            <div
+              *ngIf="
+                addchequebook.controls['chequebook_bank'].touched &&
+                !addchequebook.controls['chequebook_bank'].valid
+              "
+              class="alert alert-danger"
+            >
+              <span
+                *ngIf="
+                  addchequebook.controls['chequebook_bank'].hasError('required')
+                "
+              >
+                Bank name is required
+              </span>
+              <span
+                *ngIf="
+                  addchequebook.controls['chequebook_bank'].hasError(
+                    'minlength'
+                  )
+                "
+              >
+                Min length is 3
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group m-form__group row">
+          <label class="col-lg-2 col-form-label">Chequebook Name:</label>
+          <div class="col-lg-6">
+            <select
+              (change)="changeChequebook($event)"
+              formControlName="chequebook_name"
+              class="form-control"
+            >
+              <option selected disabled>Select Name</option>
+              <option *ngFor="let account of accounts" [value]="account._id">
+                {{ account.account_name }}</option
+              >
+            </select>
+          </div>
+        </div>
+        <div class="form-group m-form__group row">
+          <label class="col-lg-2 col-form-label">Account Id:</label>
+          <div class="col-lg-6">
+            <label class="col-lg-2 col-form-label">{{ selectedid }}</label>
+          </div>
+        </div>
+        <div class="form-group m-form__group row">
+          <label class="col-lg-2 col-form-label">Cheque Book Start No:</label>
+          <div class="col-lg-6">
+            <input
+              formControlName="chequebook_st_no"
+              type="text"
+              class="form-control m-input"
+              placeholder="Enter Cheque No"
+            />
+            <div
+              *ngIf="
+                addchequebook.controls['chequebook_st_no'].touched &&
+                !addchequebook.controls['chequebook_st_no'].valid
+              "
+              class="alert alert-danger"
+            >
+              <span
+                *ngIf="
+                  addchequebook.controls['chequebook_st_no'].hasError(
+                    'required'
+                  )
+                "
+              >
+                Cheque No. is required
+              </span>
+              <span
+                *ngIf="
+                  addchequebook.controls['chequebook_st_no'].hasError('pattern')
+                "
+              >
+                Must be a number
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group m-form__group row">
+          <label class="col-lg-2 col-form-label">Cheque Book End No:</label>
+          <div class="col-lg-6">
+            <input
+              formControlName="chequebook_end_no"
+              type="text"
+              class="form-control m-input"
+              placeholder="Enter Cheque No"
+            />
+            <div
+              *ngIf="
+                addchequebook.controls['chequebook_end_no'].touched &&
+                !addchequebook.controls['chequebook_end_no'].valid
+              "
+              class="alert alert-danger"
+            >
+              <span
+                *ngIf="
+                  addchequebook.controls['chequebook_end_no'].hasError(
+                    'required'
+                  )
+                "
+              >
+                Cheque No. is required
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="m-portlet__foot m-portlet__no-border m-portlet__foot--fit">
+        <div class="m-form__actions m-form__actions--solid">
+          <div class="row">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-6">
+              <button type="submit" class="btn btn-focus">
+                Submit</button
+              >&nbsp;&nbsp;
+             
+              <button
+                routerLink="/settings/chequebook"
+                class="btn btn-outline-focus"
+              >
+                Back
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <!--end::Form-->
+  </div>
+</div>

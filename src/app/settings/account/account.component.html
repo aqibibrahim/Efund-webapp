@@ -1,0 +1,522 @@
+<div class="m-subheader">
+  <div class="d-flex align-items-center">
+    <div class="mr-auto">
+      <h3 class="m-subheader__title"></h3>
+    </div>
+    <!-- <div>
+      <span class="m-subheader__daterange" id="m_dashboard_daterangepicker">
+        <span class="m-subheader__daterange-label">
+          <span class="m-subheader__daterange-title">Today:</span>
+          <span class="m-subheader__daterange-date m--font-brand">Feb 24</span>
+        </span>
+        <a
+          class="btn btn-sm btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill"
+        >
+          <i class="la la-angle-down"></i>
+        </a>
+      </span>
+    </div> -->
+  </div>
+</div>
+<div class="m-content">
+  <div class="m-portlet">
+    <div class="m-portlet__head">
+      <div class="m-portlet__head-caption">
+        <div class="m-portlet__head-title">
+          <h3 class="m-portlet__head-text text-center">Account List</h3>
+        </div>
+      </div>
+    </div>
+    <div class="m-portlet__body">
+      <div class="form-group m-form__group row justify-content-end">
+        <div>
+          <mat-form-field class="mr-5">
+            <input
+              matInput
+              (keyup)="applyFilter($event.target.value)"
+              placeholder="Filter"
+            />
+          </mat-form-field>
+          <!-- </div> -->
+          <!-- <div class="offset-1"> -->
+          <button
+            type="button"
+            [routerLink]="['/settings/add-account']"
+            class="btn btn-focus m-btn--square m-btn m-btn--custom"
+          >
+            Add
+          </button>
+        </div>
+      </div>
+      <table mat-table [dataSource]="dataSource">
+        <!-- Position Column -->
+        <ng-container matColumnDef="position">
+          <th mat-header-cell *matHeaderCellDef>Sr. No.</th>
+          <td mat-cell *matCellDef="let element">{{ element.position }}</td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Bank Name</th>
+          <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="holder">
+          <th mat-header-cell *matHeaderCellDef>Account Holder</th>
+          <td mat-cell *matCellDef="let element">{{ element.holder }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="location">
+          <th mat-header-cell *matHeaderCellDef>Branch Location</th>
+          <td mat-cell *matCellDef="let element">{{ element.location }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef>Amount</th>
+          <td mat-cell *matCellDef="let element">{{ element.amount }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Date of Submit</th>
+          <td mat-cell *matCellDef="let element">{{ convertDateToDMY(element.date) }}</td>
+        </ng-container>
+
+        <!-- Symbol Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let element">
+            <i
+              class="fas fa-user-edit p-1 text-success"
+              (click)="openEdit(editModal, element.id)"
+              placement="bottom"
+              ngbTooltip="Edit Account"
+            ></i>
+            <i
+              class="fas fa-trash text-danger"
+              (click)="openDelete(deleteModal, element.id)"
+              placement="bottom"
+              ngbTooltip="Delete Account"
+            ></i>
+            <i
+              class="fas fa-info-circle p-1 text-primary"
+              (click)="openDetails(detailsModal, element.id)"
+              placement="bottom"
+              ngbTooltip="Account Details"
+            ></i>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    <div class="modal-lg">
+      <ng-template class="modal-lg" #detailsModal let-modal>
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-basic-title">Account Details</h4>
+          <button
+            type="button"
+            class="close"
+            aria-label="Close"
+            (click)="modal.dismiss('Cross click')"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body m-3">
+          <form class="m-form m-form--fit m-form--label-align-right">
+            <div class="form-group m-form__group row">
+              <div class="col-lg-6">
+                <label>Name:</label>
+                <input
+                  disabled
+                  [(ngModel)]="detailsData.account_name"
+                  [ngModelOptions]="{ standalone: true }"
+                  type="text"
+                  class="form-control m-input"
+                />
+              </div>
+              <div class="col-lg-6">
+                <label class="">Address:</label>
+                <input
+                  disabled
+                  [(ngModel)]="detailsData.account_address"
+                  [ngModelOptions]="{ standalone: true }"
+                  type="text"
+                  class="form-control m-input"
+                />
+              </div>
+            </div>
+            <div class="form-group m-form__group row">
+              <div class="col-lg-6">
+                <label>CNIC:</label>
+                <input
+                  disabled
+                  [(ngModel)]="detailsData.account_cnic"
+                  [ngModelOptions]="{ standalone: true }"
+                  type="text"
+                  class="form-control m-input"
+                />
+              </div>
+              <div class="col-lg-6">
+                <label class="">Account Number:</label>
+                <input
+                  disabled
+                  [(ngModel)]="detailsData.account_no"
+                  [ngModelOptions]="{ standalone: true }"
+                  type="text"
+                  class="form-control m-input"
+                />
+              </div>
+            </div>
+            <div class="form-group m-form__group row">
+              <div class="col-lg-6">
+                <label>Bank Name:</label>
+                <input
+                  disabled
+                  [(ngModel)]="detailsData.name"
+                  [ngModelOptions]="{ standalone: true }"
+                  type="text"
+                  class="form-control m-input"
+                />
+              </div>
+              <div class="col-lg-6">
+                <label class="">Opening Balance:</label>
+                <input
+                  disabled
+                  [(ngModel)]="detailsData.opening_balance"
+                  [ngModelOptions]="{ standalone: true }"
+                  type="text"
+                  class="form-control m-input"
+                />
+              </div>
+            </div>
+            <div class="form-group m-form__group row">
+              <div class="col-lg-6">
+                <label>Date:</label>
+                <input
+                  disabled
+                  [(ngModel)]="detailsData.date"
+                  [ngModelOptions]="{ standalone: true }"
+                  type="text"
+                  class="form-control m-input"
+                />
+              </div>
+              <div class="col-lg-6">
+                <label class="">Amount:</label>
+                <input
+                  disabled
+                  [(ngModel)]="currentamount"
+                  [ngModelOptions]="{ standalone: true }"
+                  type="text"
+                  class="form-control m-input"
+                />
+              </div>
+            </div>
+            <!-- <div *ngFor="let account of detailsData.child_account" class="form-group m-form__group row">
+              <div class="col-lg-6">
+                <label>Child Account Name:</label>
+                <input disabled [(ngModel)]="account.child_name" [ngModelOptions]="{standalone:true}" type="text"
+                  class="form-control m-input">
+              </div>
+              <div class="col-lg-6">
+                <label class="">Child Account ID:</label>
+                <input disabled [(ngModel)]="account.child_id" [ngModelOptions]="{standalone:true}" type="text"
+                  class="form-control m-input">
+              </div>
+              <div class="col-lg-6">
+                <label class="">Child Account Location:</label>
+                <input disabled [(ngModel)]="account.child_location" [ngModelOptions]="{standalone:true}" type="text"
+                  class="form-control m-input">
+              </div>
+            </div> -->
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-danger btn-warn"
+            (click)="modal.close('Save click')"
+          >
+            Close
+          </button>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="modal-lg">
+      <ng-template class="modal-lg" #deleteModal let-modal>
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-title">Account deletion</h4>
+          <button
+            type="button"
+            class="close"
+            aria-describedby="modal-title"
+            (click)="modal.dismiss('Cross click')"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Are you sure you want to delete this account?</strong></p>
+          <p>
+            All information associated to this account will be permanently
+            deleted.
+            <span class="text-danger">This operation can not be undone.</span>
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="modal.dismiss('cancel click')"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="deleteAccount(deleteitem)"
+          >
+            Delete
+          </button>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="modal-lg">
+      <ng-template class="modal-lg" #editModal let-modal>
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-basic-title">Edit Account</h4>
+          <button
+            type="button"
+            class="close"
+            aria-label="Close"
+            (click)="modal.dismiss('Cross click')"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body m-3">
+          <form
+            [formGroup]="addaccount"
+            (ngSubmit)="updateAccount(addaccount.value)"
+            class="m-form m-form--fit m-form--label-align-right m-form--group-seperator"
+          >
+            <div class="m-portlet__body">
+              <div class="form-group m-form__group row">
+                <label class="col-sm-2 col-form-label"
+                  >Account Holder Name:</label
+                >
+                <div class="col-sm-6">
+                  <input
+                    type="text"
+                    [(ngModel)]="accountData.name"
+                    formControlName="account_name"
+                    class="form-control m-input"
+                    placeholder="Enter Account Holder Name"
+                  />
+                  <div
+                    *ngIf="
+                      addaccount.controls['account_name'].touched &&
+                      !addaccount.controls['account_name'].valid
+                    "
+                    class="alert alert-danger"
+                  >
+                    <span
+                      *ngIf="
+                        addaccount.controls['account_name'].hasError('required')
+                      "
+                    >
+                      Holder name is required
+                    </span>
+                    <span
+                      *ngIf="
+                        addaccount.controls['account_name'].hasError(
+                          'minlength'
+                        )
+                      "
+                    >
+                      Min length is 3
+                    </span>
+                    <span
+                      *ngIf="
+                        addaccount.controls['account_name'].hasError('pattern')
+                      "
+                    >
+                      Must be alphabets
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group m-form__group row">
+                <label class="col-sm-2 col-form-label">Account No.</label>
+                <div class="col-sm-6">
+                  <input
+                    [(ngModel)]="accountData.acc_no"
+                    type="text"
+                    formControlName="account_no"
+                    class="form-control m-input"
+                    placeholder="Enter Account No."
+                  />
+                  <div
+                    *ngIf="
+                      addaccount.controls['account_no'].touched &&
+                      !addaccount.controls['account_no'].valid
+                    "
+                    class="alert alert-danger"
+                  >
+                    <span
+                      *ngIf="
+                        addaccount.controls['account_no'].hasError('required')
+                      "
+                    >
+                      Account is required
+                    </span>
+                    <span
+                      *ngIf="
+                        addaccount.controls['account_no'].hasError('pattern')
+                      "
+                    >
+                      Must be a number
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <!-- Amount Field -->
+              <div class="form-group m-form__group row">
+                <label class="col-sm-2 col-form-label">Current Amount</label>
+                <div class="col-sm-6">
+                  <input
+                    value="{{currentamount}}"
+                    type="text"
+                    
+                    class="form-control m-input"
+                    placeholder="Enter Amount."
+                    disabled
+                  />
+                </div>
+              </div>
+
+              <div class="form-group m-form__group row">
+                <label class="col-sm-2 col-form-label">Update Amount</label>
+                <div class="col-sm-6">
+                  <select  class='form-control' 
+                    (change)="ChangingValue($event)" [value]='46'>
+                  <option value='credit'>Credit</option>
+                  <option value='debit'>Debit</option>
+                </select>
+                </div>
+              </div>
+              
+
+              <div class="form-group m-form__group row" *ngIf="cred_debt != undefined">
+                <label class="col-sm-2 col-form-label">New Amount</label>
+                <div class="col-sm-6">
+                  <input
+                    
+                    type="text"
+                    class="form-control m-input"
+                    placeholder="Enter Amount."
+                    (input)="onSearchChange($event.target.value)"
+                  />
+                  <div *ngIf="
+                  addaccount.controls['amount'].touched &&
+                  !addaccount.controls['amount'].valid
+                " class="alert alert-danger">
+                  <span *ngIf="addaccount.controls['amount'].hasError('pattern')">
+                    Must be a number
+                  </span>
+                </div>
+                </div>
+              </div>
+
+              <div class="form-group m-form__group row">
+                <label class="col-sm-2 col-form-label">Total Amount</label>
+                <div class="col-sm-6">
+                  <input
+                  formControlName="amount"
+                  [(ngModel)]="currentamount"
+                    type="text"
+                    class="form-control m-input"
+                    placeholder="Enter Amount."
+                    (input)="onSearchChange($event.target.value)"
+                  />
+                  <div *ngIf="
+                  addaccount.controls['amount'].touched &&
+                  !addaccount.controls['amount'].valid
+                " class="alert alert-danger">
+                  <span *ngIf="addaccount.controls['amount'].hasError('pattern')">
+                    Must be a number
+                  </span>
+                </div>
+                </div>
+              </div>
+             <!-- Amount Field  -->
+
+              <div class="form-group m-form__group row">
+                <label class="col-sm-2 col-form-label">Address:</label>
+                <div class="col-sm-6">
+                  <input
+                    [(ngModel)]="accountData.address"
+                    type="text"
+                    formControlName="account_address"
+                    class="form-control m-input"
+                    placeholder="Enter Address"
+                  />
+                  <div
+                    *ngIf="
+                      addaccount.controls['account_address'].touched &&
+                      !addaccount.controls['account_address'].valid
+                    "
+                    class="alert alert-danger"
+                  >
+                    <span
+                      *ngIf="
+                        addaccount.controls['account_address'].hasError(
+                          'required'
+                        )
+                      "
+                    >
+                      Address is required
+                    </span>
+                    <span
+                      *ngIf="
+                        addaccount.controls['account_address'].hasError(
+                          'minlength'
+                        )
+                      "
+                    >
+                      Min length is 5
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="m-form__group form-group row">
+                <div class="col-sm-6 offset-7">
+                  <button
+                    type="submit"
+                    [disabled]="!addaccount.valid"
+                    class="btn m-btn--square m-btn m-btn--custom pull-right ml-2"
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-danger btn-warn"
+            (click)="modal.close('Save click')"
+          >
+            Close
+          </button>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

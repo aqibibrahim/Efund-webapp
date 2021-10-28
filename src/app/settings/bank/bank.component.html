@@ -1,0 +1,220 @@
+<div class="m-subheader">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+            <h3 class="m-subheader__title"></h3>
+        </div>
+        <!-- <div> <span class="m-subheader__daterange" id="m_dashboard_daterangepicker"> <span
+                    class="m-subheader__daterange-label"> <span class="m-subheader__daterange-title">Today:</span> <span
+                        class="m-subheader__daterange-date m--font-brand">Feb 24</span> </span>
+                <a class="btn btn-sm btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill">
+                    <i class="la la-angle-down"></i>
+                </a>
+            </span>
+        </div> -->
+    </div>
+</div>
+<div class="m-content">
+    <div class="m-portlet">
+        <div class="m-portlet__head">
+            <div class="m-portlet__head-caption">
+                <div class="m-portlet__head-title">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text"> Bank List </h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="m-portlet__body">
+            <div class="form-group m-form__group row justify-content-end">
+                <div>
+                    <mat-form-field class="mr-5">
+                        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter" />
+                    </mat-form-field>
+                    <!-- </div> -->
+                    <!-- <div class="offset-1"> -->
+                    <button type="button" [routerLink]="['/settings/add-bank']"
+                        class="btn btn-focus m-btn--square  m-btn m-btn--custom">
+                        Add
+                    </button>
+                </div>
+            </div>
+            <table mat-table [dataSource]="dataSource">
+
+                <!-- Position Column -->
+                <ng-container matColumnDef="position">
+                    <th mat-header-cell *matHeaderCellDef>Sr. No. </th>
+                    <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+                </ng-container>
+
+                <!-- Name Column -->
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef> Bank Name </th>
+                    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="branchpin">
+                    <th mat-header-cell *matHeaderCellDef> Branch Pin </th>
+                    <td mat-cell *matCellDef="let element"> {{element.branchpin}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="branchlocation">
+                    <th mat-header-cell *matHeaderCellDef> Branch Location </th>
+                    <td mat-cell *matCellDef="let element"> {{element.branchlocation}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="city">
+                    <th mat-header-cell *matHeaderCellDef> City </th>
+                    <td mat-cell *matCellDef="let element"> {{element.city}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="date">
+                    <th mat-header-cell *matHeaderCellDef> Date of Submit </th>
+                    <td mat-cell *matCellDef="let element"> {{convertDateToDMY(element.date) }} </td>
+                </ng-container>
+
+                <!-- Symbol Column -->
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef> Actions </th>
+                    <td mat-cell *matCellDef="let element">
+                        <i class="fas fa-user-edit p-1 text-success" (click)="openEdit(editModal,element.id)"
+                            placement="bottom" ngbTooltip="Edit Bank"></i>
+                        <i class="fas fa-trash text-danger" (click)="openDelete(deleteModal,element.id)"
+                            placement="bottom" ngbTooltip="Delete Bank"></i>
+                    </td>
+                </ng-container>
+
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </div>
+
+        <div class="modal-lg">
+            <ng-template class="modal-lg" #editModal let-modal>
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modal-basic-title">Edit Bank</h4>
+                    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body m-3">
+                    <form [formGroup]="bank" (ngSubmit)="updateBank(bank.value)"
+                        class="m-form m-form--fit m-form--label-align-right m-form--group-seperator">
+                        <div class="m-portlet__body">
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-2 col-form-label">Bank Name:</label>
+                                <div class="col-lg-6">
+                                    <input [(ngModel)]="bankData.name" formControlName="name" type="text"
+                                        class="form-control m-input" placeholder="Enter Bank Name" />
+                                    <div *ngIf="
+                bank.controls['name'].touched && !bank.controls['name'].valid
+              " class="alert alert-danger">
+                                        <span *ngIf="bank.controls['name'].hasError('required')">
+                                            Bank name is required
+                                        </span>
+                                        <span *ngIf="bank.controls['name'].hasError('minlength')">
+                                            Min length is 3
+                                        </span>
+                                        <span *ngIf="bank.controls['name'].hasError('pattern')">
+                                            Name can only have alphabets
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-2 col-form-label">Branch Pin:</label>
+                                <div class="col-lg-6">
+                                    <input [(ngModel)]="bankData.pin" formControlName="pin" type="text"
+                                        class="form-control m-input" placeholder="Enter Branch pin" />
+                                    <div *ngIf="
+                bank.controls['pin'].touched && !bank.controls['pin'].valid
+              " class="alert alert-danger">
+                                        <span *ngIf="bank.controls['pin'].hasError('required')">
+                                            Branch pin is required
+                                        </span>
+                                        <span *ngIf="bank.controls['pin'].hasError('pattern')">
+                                            Must be a Number
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-2 col-form-label">Branch Location</label>
+                                <div class="col-lg-6">
+                                    <input [(ngModel)]="bankData.location" formControlName="location" type="text"
+                                        class="form-control m-input" placeholder="Enter Branch Location" />
+                                    <div *ngIf="
+                bank.controls['location'].touched &&
+                !bank.controls['location'].valid
+              " class="alert alert-danger">
+                                        <span *ngIf="bank.controls['location'].hasError('required')">
+                                            Branch Location is required
+                                        </span>
+                                        <span *ngIf="bank.controls['location'].hasError('minlength')">
+                                            Min length is 3
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-2 col-form-label">City:</label>
+                                <div class="col-lg-6">
+                                    <input [(ngModel)]="bankData.city" formControlName="city" type="text"
+                                        class="form-control m-input" placeholder="Enter City" />
+                                    <div *ngIf="
+                bank.controls['city'].touched && !bank.controls['city'].valid
+              " class="alert alert-danger">
+                                        <span *ngIf="bank.controls['city'].hasError('required')">
+                                            City is required
+                                        </span>
+                                        <span *ngIf="bank.controls['city'].hasError('minlength')">
+                                            Min length is 5
+                                        </span>
+                                        <span *ngIf="bank.controls['city'].hasError('pattern')">
+                                            city can only have alphabets
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="m-form__group m-form__group form-group row">
+                                <div class="col-sm-6 offset-7">
+                                    <button [disabled]="!bank.valid"
+                                        class="btn m-btn--square m-btn m-btn--custom pull-right ml-2">
+                                        Submit
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger btn-warn"
+                        (click)="modal.close('Save click')">Close</button>
+                </div>
+            </ng-template>
+        </div>
+
+        <div class="modal-lg">
+            <ng-template class="modal-lg" #deleteModal let-modal>
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modal-title">Bank deletion</h4>
+                    <button type="button" class="close" aria-describedby="modal-title"
+                        (click)="modal.dismiss('Cross click')">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Are you sure you want to delete this bank?</strong></p>
+                    <p>All information associated to this bank will be permanently deleted.
+                        <span class="text-danger">This operation can not be undone.</span>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary"
+                        (click)="modal.dismiss('cancel click')">Cancel</button>
+                    <button type="button" class="btn btn-danger" (click)="deleteBank(deleteitem)">Delete</button>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>
